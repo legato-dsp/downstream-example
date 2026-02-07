@@ -1,0 +1,37 @@
+audio {
+    // Carrier and mod waves
+    sine: carrier { freq: 440.0, chans: 1 },
+    sine: mod { freq: 550.0, chans: 1 },
+    
+    // The FM ratio, just 1.5 for now
+    mult: fm_freq { val: 1.5 },
+
+    // The FM gain
+    mult: fm_gain { val: 1000.0, chans: 1 },
+
+    // One output chan, another control chan
+    add: fm_add,
+
+    mono_fan_out: master { chans: 2 },
+}
+
+control {
+    // The carrier frequency
+    signal: freq { name: "freq", min: 40.0, max: 22000.0, default: 440.0 },
+}
+
+freq >> fm_freq
+
+fm_freq >> mod.freq
+
+mod >> fm_gain[0]
+
+fm_gain >> fm_add[1]
+
+freq >> fm_add[0]
+
+fm_add >> carrier.freq
+
+carrier >> master
+
+{ master }

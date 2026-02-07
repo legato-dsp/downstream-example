@@ -1,2 +1,8 @@
 # downstream-example
 An example downstream app dogfooding Legato. This will be a kitchen sink example with different sample rates, delay lines, midi, etc.
+
+### Getting Started
+
+For Nix users, simply use the Nix shell or direnv.
+
+For other platforms, you will have to install a nightly Rust toolchain, and have FFMPEG as a dependency.
