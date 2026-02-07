@@ -2,16 +2,12 @@ audio {
     // Carrier and mod waves
     sine: carrier { freq: 440.0, chans: 1 },
     sine: mod { freq: 550.0, chans: 1 },
-    
     // The FM ratio, just 1.5 for now
     mult: fm_freq { val: 1.5 },
-
     // The FM gain
     mult: fm_gain { val: 1000.0, chans: 1 },
-
     // One output chan, another control chan
     add: fm_add,
-
     mono_fan_out: master { chans: 2 },
 }
 
