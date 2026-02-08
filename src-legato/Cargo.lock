@@ -525,8 +525,8 @@ checksum = "bbd2bcb4c963f2ddae06a2efc7e9f3591312473c50c6685e1f298068316e66fe"
 
 [[package]]
 name = "legato"
-version = "0.0.5"
-source = "git+https://github.com/legato-dsp/legato.git#3d8337c1df0f2694a88d076d9c8697d06e3d2b60"
+version = "0.0.6"
+source = "git+https://github.com/legato-dsp/legato.git?branch=main#e70fd3e5aace5af2b0048913c84019ccd905ecf1"
 dependencies = [
  "approx",
  "arc-swap",
