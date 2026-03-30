@@ -1,33 +1,41 @@
+// A single FM mod + carrier with ADSR on both oscillators
+patch fm() {
+    in freq_mod freq_carrier gain
+
+    audio {
+        sine: mod { },
+        sine: carrier { },
+        add: fm_add { val: 0.0 }, // This is confusing, find better semantics.
+        mult: fm_gain { val: 1.0 } // Default
+    }
+
+    freq_mod >> mod
+
+    freq_carrier >> fm_add[0]
+
+    gain >> fm_gain.val
+
+    mod >> fm_gain[0]
+    
+    fm_gain >> fm_add[1]
+
+    fm_add >> carrier
+
+    { carrier }
+}
+
 audio {
-    // Carrier and mod waves
-    sine: carrier { freq: 440.0, chans: 1 },
-    sine: mod { freq: 550.0, chans: 1 },
-    // The FM ratio, just 1.5 for now
-    mult: fm_freq { val: 1.5 },
-    // The FM gain
-    mult: fm_gain { val: 1000.0, chans: 1 },
-    // One output chan, another control chan
-    add: fm_add,
-    mono_fan_out: master { chans: 2 },
+    fm { }
 }
 
 control {
-    // The carrier frequency
-    signal: freq { name: "freq", min: 40.0, max: 22000.0, default: 440.0 },
+    signal: f_mod { name: "f_mod", min: 24.0, max: 24000.0, default: 550.0 },
+    signal: f_carrier { name: "f_carrier", min: 24.0, max: 24000.0, default: 440.0 },
+    signal: f_gain { name: "f_gain", min: 0.0, max: 10000.0, default: 1000.0 }
 }
 
-freq >> fm_freq
+f_mod >> fm.freq_mod
+f_carrier >> fm.freq_carrier
+f_gain >> fm.gain
 
-fm_freq >> mod.freq
-
-mod >> fm_gain[0]
-
-fm_gain >> fm_add[1]
-
-freq >> fm_add[0]
-
-fm_add >> carrier.freq
-
-carrier >> master
-
-{ master }
+{ fm }
