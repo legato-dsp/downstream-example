@@ -1,6 +1,9 @@
 use std::fs;
 
-use cpal::{SampleRate, StreamConfig, traits::HostTrait};
+use cpal::{
+    SampleRate, StreamConfig,
+    traits::{DeviceTrait, HostTrait},
+};
 use legato::{
     builder::{LegatoBuilder, Unconfigured},
     config::{BlockSize, Config},
@@ -12,7 +15,7 @@ use legato::{
 fn main() {
     let graph = fs::read_to_string("../.legato").expect("Could not fine legato file!");
 
-    let config = Config::new(48_000, BlockSize::Block1024, 2, 6);
+    let config = Config::new(48_000, BlockSize::Block256, 2, 6);
 
     let ports = PortBuilder::default().audio_out(2).build();
 
@@ -35,7 +38,19 @@ fn main() {
     #[cfg(target_os = "linux")]
     let host = cpal::host_from_id(cpal::HostId::Jack).expect("JACK host not available");
 
+    let devices = host.output_devices().expect("Failed to get output devices");
+
+    println!("Available output devices:");
+    for device in devices {
+        // 3. Print device name
+        if let Ok(name) = device.name() {
+            println!("  {}", name);
+        }
+    }
+
     let device = host.default_output_device().unwrap();
+
+    dbg!(device.name());
 
     let stream_config = StreamConfig {
         channels: config.channels as u16,

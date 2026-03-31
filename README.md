@@ -13,3 +13,5 @@ To run:
 cd src-legato
 cargo run # you may want to pass the --release flag for realtime audio applications
 ```
+
+You may have to play around in main.rs and adjust your midi and audio ports.
