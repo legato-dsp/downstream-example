@@ -4,6 +4,7 @@ use cpal::{SampleRate, StreamConfig, traits::HostTrait};
 use legato::{
     builder::{LegatoBuilder, Unconfigured},
     config::{BlockSize, Config},
+    midi::{MidiPortKind, start_midi_thread},
     out::start_application_audio_thread,
     ports::PortBuilder,
 };
@@ -15,7 +16,18 @@ fn main() {
 
     let ports = PortBuilder::default().audio_out(2).build();
 
-    let (app, _frontend) = LegatoBuilder::<Unconfigured>::new(config, ports).build_dsl(&graph);
+    let (midi_rt_fe, _writer_fe) = start_midi_thread(
+        256,
+        "my_port",
+        MidiPortKind::Index(0),
+        MidiPortKind::Index(0),
+        "my_port",
+    )
+    .unwrap();
+
+    let (app, _frontend) = LegatoBuilder::<Unconfigured>::new(config, ports)
+        .set_midi_runtime(midi_rt_fe)
+        .build_dsl(&graph);
 
     #[cfg(target_os = "macos")]
     let host = cpal::host_from_id(cpal::HostId::CoreAudio).expect("JACK host not available");
